@@ -166,7 +166,7 @@ class UserSocialAuthMixin(object):
             assoc = Association.objects.get(**args)
         except Association.DoesNotExist:
             assoc = Association(**args)
-        assoc.secret = base64.encodestring(association.secret)
+        assoc.secret = base64.encodebytes(bytes(association.secret, "utf-8"))
         assoc.issued = association.issued
         assoc.lifetime = association.lifetime
         assoc.assoc_type = association.assoc_type
@@ -192,7 +192,7 @@ class UserSocialAuthMixin(object):
         return sorted([
                 (assoc.id,
                  OIDAssociation(assoc.handle,
-                                base64.decodestring(assoc.secret),
+                                base64.decodebytes(bytes(assoc.secret, "utf-8")),
                                 assoc.issued,
                                 assoc.lifetime,
                                 assoc.assoc_type))
